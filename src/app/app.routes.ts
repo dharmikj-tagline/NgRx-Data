@@ -13,6 +13,6 @@ export const routes: Routes = [
     },
     {
         path: 'custom',
-        loadComponent: () => import('./components/custom/components/custom-wrapper/custom-wrapper.component').then(c => c.CustomWrapperComponent),
+        loadComponent: () => import('./components/custom/components/custom-wrapper/custom-wrapper.component').then(c => c.CustomWrapperComponent)
     }
 ];

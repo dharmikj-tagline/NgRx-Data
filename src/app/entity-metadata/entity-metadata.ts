@@ -25,10 +25,57 @@ export interface UserList {
 }
 
 const entityMetadata: EntityMetadataMap = {
-    User: {},
-    UserDetail: {},
+    User: {
+        // filterFn: (entities: any, pattern: any) => {
+        //     const { name, username } = pattern;
+        //     return entities.filter((entity: any) => entity.name === name && entity.username === username);
+        // }
+
+        // filterFn: (entities: any, pattern: any) => {
+        //     return entities.filter((entity: any) => Object.keys(pattern).every(key => entity[key] === pattern[key]));
+        // },
+
+        filterFn: (entities: any[], condition: any) => {
+            if (condition) {
+                return entities.filter((entity: any) => {
+                    return Object.keys(condition).every((key) => {
+                        const [operator, targetValue] = condition[key];
+                        switch (operator) {
+                            case '===':
+                                return entity[key] === targetValue;
+                            case '<':
+                                return entity[key] < targetValue;
+                            case '>':
+                                return entity[key] > targetValue;
+                            case '!==':
+                                return entity[key] !== targetValue;
+                            default:
+                                return true;
+                        }
+                    });
+                });
+            }
+            return entities;
+        },
+    },
+    UserDetail: {}
 };
 
 export const entityConfig = {
     entityMetadata
+};
+
+
+
+const entitySampMetadata: EntityMetadataMap = {
+    Item: {},
+};
+
+const pluralNames = {
+    Item: 'Items',
+};
+
+export const entitySampConfig = {
+    entityMetadata,
+    pluralNames,
 };

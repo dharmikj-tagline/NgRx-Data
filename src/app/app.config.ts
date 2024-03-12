@@ -1,13 +1,15 @@
 import { provideHttpClient } from '@angular/common/http';
 import { ApplicationConfig, isDevMode } from '@angular/core';
 import { provideRouter } from '@angular/router';
-import { DefaultDataServiceConfig, provideEntityData, withEffects } from '@ngrx/data';
+import { DefaultDataServiceConfig, HttpUrlGenerator, provideEntityData, withEffects } from '@ngrx/data';
 import { provideEffects } from '@ngrx/effects';
 import { provideStore } from '@ngrx/store';
 import { provideStoreDevtools } from '@ngrx/store-devtools';
 import { routes } from './app.routes';
 import { UserDataService } from './components/users/service/user-data.service';
-import { entityConfig } from './entity-metadata/entity-metadata';
+import { entityConfig, entitySampConfig } from './entity-metadata/entity-metadata';
+import { entityCustomConfig } from './components/custom/entity-custom-metadata/entity-custom-metadata';
+import { CustomurlHttpGenerator } from './entity-metadata/customurl-http-generator';
 
 // const defaultDataServiceConfig: DefaultDataServiceConfig = {
 //   root: 'https://my-api-domain.com:8000/api/v1',
@@ -22,6 +24,8 @@ export const appConfig: ApplicationConfig = {
     provideStore(),
     provideEffects(),
     provideEntityData(entityConfig, withEffects()),
+    provideEntityData(entityCustomConfig, withEffects()),
+    // provideEntityData(entitySampConfig, withEffects()),
     provideStoreDevtools({
       logOnly: !isDevMode(),
       autoPause: true,
@@ -34,8 +38,9 @@ export const appConfig: ApplicationConfig = {
         persist: true
       }
     }),
+    { provide: HttpUrlGenerator, useClass: CustomurlHttpGenerator, },
     // { provide: DefaultDataServiceConfig, useValue: defaultDataServiceConfig },
-    UserDataService,
+    // UserDataService,
     // {
     //   provide: ENVIRONMENT_INITIALIZER,
     //   useValue() {

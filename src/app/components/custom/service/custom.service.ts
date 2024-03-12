@@ -1,27 +1,33 @@
 import { Injectable } from '@angular/core';
-import { EntityCollectionServiceBase, EntityCollectionServiceElementsFactory, EntityDataService } from '@ngrx/data';
+import { EntityActionOptions, EntityCollectionServiceBase, EntityCollectionServiceElementsFactory, EntityDataService } from '@ngrx/data';
+import { UserCustomDataService } from './user-custom-data.service';
+import { PostCustomDataService } from './post-custom-data.service';
+import { Observable } from 'rxjs';
 
 @Injectable({
   providedIn: 'root'
 })
 export class CustomService extends EntityCollectionServiceBase<any>{
 
-
   constructor(
     private serviceEleFactory: EntityCollectionServiceElementsFactory,
     private entityDataService: EntityDataService,
+    private userCustomDataService: UserCustomDataService,
+    private postCustomDataService: PostCustomDataService,
     // private customDataService: UserDataService
   ) {
-    super('UserCustomList', serviceEleFactory)
-    // entityDataService.registerService('User', userDataService);
-  }
-  products = [
-    { id: 1, name: 'Product 1', price: 10.99 },
-    { id: 2, name: 'Product 2', price: 20.49 },
-    // Add more products as needed
-  ];
+    super('PostList', serviceEleFactory);
+    entityDataService.registerService('PostList', postCustomDataService);
+    // // Define the entity names you want to use
+    // const entityNames = ['UserCustomList', 'PostCustomList'];
 
-  // getAll() {
-  //   return this.products;
-  // }
+    // // Loop through the entity names and register services
+    // entityNames.forEach((entityName) => {
+    //   const service: any = entityName === '' ? userCustomDataService : postCustomDataService;
+
+    //   // Register the service for each entity name
+    //   console.log('service :>> ', service);
+    //   entityDataService.registerService(entityName, service);
+    // });
+  }
 }

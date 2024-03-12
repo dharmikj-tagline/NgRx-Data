@@ -16,7 +16,11 @@ export class UserDetailDataService extends DefaultDataService<UserList> {
         super('UserDetail', http, httpUrl);
     }
 
-    override getWithQuery(userid: any): Observable<any> {
-        return this.http.get(`${this.url}/users/${userid}`).pipe(map(res => [res]));
-    }
+    // override getWithQuery(userid: any): Observable<any> {
+    //     return this.http.get(`${this.url}/users/${userid}`).pipe(map(res => [res]));
+    // }
+
+    // override getById(userid: any): Observable<any> {
+    //     return this.http.get(`${this.url}/users/${userid}`).pipe(map(res => [res]));
+    // }
 }

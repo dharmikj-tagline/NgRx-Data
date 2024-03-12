@@ -1,13 +1,11 @@
-import { Component, ElementRef, ViewChild, inject } from '@angular/core';
 import { CommonModule } from '@angular/common';
-import { UserService } from '../../service/user.service';
-import { UserDataService } from '../../service/user-data.service';
-import { EntityDataService } from '@ngrx/data';
-import { EMPTY, Observable, catchError, combineLatest, concatMap, defaultIfEmpty, filter, first, map, mergeMap, of, startWith, switchMap, take, tap } from 'rxjs';
+import { ChangeDetectorRef, Component, ElementRef, ViewChild, inject } from '@angular/core';
+import { Observable, of, switchMap, tap } from 'rxjs';
 import { UserList } from 'src/app/entity-metadata/entity-metadata';
-import { select } from '@ngrx/store';
 import { UserDetailDataService } from '../../service/user-detail-data.service';
 import { UserDetailService } from '../../service/user-detail.service';
+import { UserService } from '../../service/user.service';
+import { EntityCollectionServiceFactory } from '@ngrx/data';
 
 @Component({
   selector: 'app-user-list',
@@ -25,28 +23,25 @@ export class UserListComponent {
   @ViewChild('modal') private modalElement!: ElementRef;
   public userList$!: Observable<any>;
   public userDetail$!: Observable<any>;
+  public loading$ = this.userService.loading$;
+  public loaded$ = this.userService.loaded$;
+
+  // constructor(private entityCollectionServiceFactory: EntityCollectionServiceFactory) {
+  //   const entityCollectionService = this.entityCollectionServiceFactory.create<any>('Item').add({ id: Date.now(), name: 'Sample' });
+  //   // this.items$ = entityCollectionService.entities$;
+  // }
+
 
   ngOnInit() {
-    // debugger;
-    // this.userList$ = this.userService.entities$.pipe(
-    //   mergeMap((res) => {
-    //     if (!res.length) return this.userService.getAll();
-    //     return of(res);
-    //   })
-    // );
-
     this.userList$ = this.userService.entities$.pipe(
       switchMap((res) => (res.length ? of(res) : this.userService.getAll()))
     );
-
-    setTimeout(() => {
-      this.delete();
-    }, 5000);
   }
 
+  userLength: number = 10;
   addUser() {
     const data = {
-      id: 0,
+      id: ++this.userLength,
       name: "Leanne Graham",
       username: "Bret",
       email: "Sincere@april.biz",
@@ -82,12 +77,6 @@ export class UserListComponent {
   viewDetail(id: any) {
     // this.userDetail$ = this.userDetailService.entities$.pipe(
     //   switchMap((res: any) => {
-    //      return (res.length && res[0]?.id === parseInt(id) ? of(res) : this.userDetailService.getWithQuery(id));
-    //   })
-    // )
-
-    // this.userDetail$ = this.userDetailService.entities$.pipe(
-    //   switchMap((res: any) => {
     //     return (res.length && res[0]?.id === parseInt(id) ? of(res) : this.userDetailService.getWithQuery(id).pipe(
     //       tap((res) => {
     //         this.userDetailService.addAllToCache(res)
@@ -96,34 +85,28 @@ export class UserListComponent {
     //   })
     // )
 
+    // this.userDetail$ = this.userDetailService.getByKey(id);
+
     this.userDetail$ = this.userDetailService.entities$.pipe(
       switchMap((cachedData) => {
         const existingData = cachedData.find(item => item.id === parseInt(id, 10));
         if (existingData) {
+          console.log('existingData :>> ', existingData);
           return of(existingData);
         }
-        return this.userDetailService.getWithQuery(id).pipe(
-          tap((newRes) => {
-            console.log('newRes :>> ', newRes);
-            this.userDetailService.addAllToCache(newRes);
-          })
-        );
+        return this.userDetailService.getByKey(id).
+          pipe(
+            tap((newRes) => {
+              console.log('newRes :>> ', newRes);
+              this.userDetailService.addAllToCache([newRes]);
+            })
+          );
       })
     );
-
-    // this.userDetailService.getWithQuery(id).pipe(
-    //   tap((res) => this.userDetailService.addAllToCache(res))
-    // );
-    //   this.userDetailService.addAllToCache(res);
-
-
 
     // this.userDetailService.getWithQuery(id).subscribe(res => {
     //   this.userDetailService.addAllToCache(res);
     // });
-
-
-    // this.userDetail$ = this.userDetailService.getWithQuery(id);
 
     this.openModal();
   }
@@ -136,10 +119,18 @@ export class UserListComponent {
     this.modalElement.nativeElement.close();
   }
 
-  delete() {
-    // const removeIds = [1, 2, 3, 4, 5, 6, 7, 8, 9, 10];
-    // this.userService.removeManyFromCache(removeIds);
+  addFilter() {
+    this.userService.setFilter({
+      name: ['===', 'Leanne Graham'],
+      // age: ['<', 30],
+      // score: ['>', 80],
+      username: ['===', 'Bret']
+    });
+    this.userList$ = this.userService.filteredEntities$;
+  }
 
-    // this.userService.getByKey(1);
+  clearFilter() {
+    this.userService.setFilter(null);
+    this.userList$ = this.userService.filteredEntities$;
   }
 }

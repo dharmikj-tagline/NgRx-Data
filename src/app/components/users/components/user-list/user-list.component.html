@@ -1,6 +1,6 @@
 <h3 class="text-danger fw-bold text-center mt-3">USER LIST</h3>
 <hr>
-<div class="container">
+<div class="container mb-4">
     <div>
         <table class="table table-striped">
             <thead class="thead-dark mt-3">
@@ -26,17 +26,22 @@
                         <td class="w-25">
                             <button class="btn btn-primary" (click)="updateDetail(user)"> UPDATE </button>
                             <button class="btn btn-danger ms-2" (click)="deleteUser(user.id)"> DELETE </button>
-                            <button class="btn btn-info ms-2" (click)="viewDetail(user.id)">
-                                VIEW </button>
+                            <button class="btn btn-info ms-2" (click)="viewDetail(user.id)"> VIEW </button>
                         </td>
                     </tr>
                 </ng-container>
             </tbody>
         </table>
         <div class="mt-5">
-            <div class="mt-4 d-flex justify-content-center">
+            <div class="mt-4 d-flex justify-content-between">
                 <button type="button" class="btn btn-primary" (click)="addUser()">
                     Add Default User
+                </button>
+                <button type="button" class="btn btn-warning" (click)="addFilter()">
+                    Add Filter
+                </button>
+                <button type="button" class="btn btn-danger" (click)="clearFilter()">
+                    Clear Filter
                 </button>
             </div>
         </div>
