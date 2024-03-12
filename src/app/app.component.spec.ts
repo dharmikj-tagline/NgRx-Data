@@ -12,16 +12,16 @@ describe('AppComponent', () => {
     expect(app).toBeTruthy();
   });
 
-  it(`should have the 'NgRx-data' title`, () => {
+  it(`should have the 'ngrx-data' title`, () => {
     const fixture = TestBed.createComponent(AppComponent);
     const app = fixture.componentInstance;
-    expect(app.title).toEqual('NgRx-data');
+    expect(app.title).toEqual('ngrx-data');
   });
 
   it('should render title', () => {
     const fixture = TestBed.createComponent(AppComponent);
     fixture.detectChanges();
     const compiled = fixture.nativeElement as HTMLElement;
-    expect(compiled.querySelector('.content span')?.textContent).toContain('NgRx-data app is running!');
+    expect(compiled.querySelector('.content span')?.textContent).toContain('ngrx-data app is running!');
   });
 });
